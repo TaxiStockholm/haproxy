@@ -493,16 +493,17 @@ class Haproxy(object):
                 for option in options:
                     backend.append("option %s" % option)
 
+            auth_enabled = self._get_service_attr("auth_enabled", service_alias)
+            if auth_enabled:
+                backend.append("acl need_auth http_auth(haproxy_userlist)")
+                backend.append("http-request auth realm haproxy_basic_auth if !need_auth")
+
             extra_settings = self._get_service_attr('extra_settings', service_alias)
             if extra_settings:
                 settings = re.split(r'(?<!\\),', extra_settings)
                 for setting in settings:
                     if setting.strip():
                         backend.append(setting.strip().replace("\,", ","))
-
-            if Haproxy.envvar_http_basic_auth:
-                backend.append("acl need_auth http_auth(haproxy_userlist)")
-                backend.append("http-request auth realm haproxy_basic_auth if !need_auth")
 
             for _service_alias, routes in self.specs.get_routes().iteritems():
                 if not service_alias or _service_alias == service_alias:
