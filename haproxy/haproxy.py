@@ -495,6 +495,7 @@ class Haproxy(object):
 
             auth_enabled = self._get_service_attr("auth_enabled", service_alias)
             if auth_enabled:
+                logger.info("setting auth_enabled")
                 backend.append("acl need_auth http_auth(haproxy_userlist)")
                 backend.append("http-request auth realm haproxy_basic_auth if !need_auth")
 
