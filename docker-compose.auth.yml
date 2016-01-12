@@ -1,0 +1,15 @@
+web:
+  image: tutum/hello-world
+  environment:
+    - "AUTH_ENABLED=true"
+haproxy:
+  build: .
+  links:
+    - "web:web"
+  environment:
+    - "HTTP_BASIC_AUTH=1234:5678,abcd:efgh"
+  ports:
+    - 80:80
+
+
+
