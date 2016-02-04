@@ -36,15 +36,19 @@ class Haproxy(object):
     envvar_http_basic_auth = os.getenv("HTTP_BASIC_AUTH")
     envvar_monitor_uri = os.getenv("MONITOR_URI")
     envvar_monitor_port = os.getenv("MONITOR_PORT")
-
-    # envvar overwritable
     envvar_balance = os.getenv("BALANCE", "roundrobin")
+    envvar_debug = os.getenv("DEBUG")
+    # envvar overwritable
 
     # const var
     const_cert_dir = "/certs/"
     const_cacert_dir = "/cacerts/"
     const_config_file = "/haproxy.cfg"
-    const_command = ['/usr/sbin/haproxy', '-f', const_config_file, '-db', '-q']
+    if envvar_debug:
+        const_debug = '-d'
+    else:
+        const_debug = '-q'
+    const_command = ['/usr/sbin/haproxy', '-f', const_config_file, '-db', const_debug]
     const_api_retry = 10  # seconds
 
     # class var
